@@ -27,10 +27,30 @@ jobs:
     - name: Run Behave tests
       run: |
         mkdir -p reports
-        behave > reports/result_report.txt
+        behave | tee reports/result_report.txt
+      continue-on-error: true  # prevents the job from stopping if tests fail
+
+    - name: List report files (for debugging)
+      run: ls -R reports
 
     - name: Archive test report
       uses: actions/upload-artifact@v4
       with:
         name: db-comparison-report
         path: reports/result_report.txt
+
+    - name: Email test report
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 587
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: Behave Test Report
+        to: your.email@example.com
+        from: GitHub Actions <your.email@example.com>
+        body: |
+          Hello Kriti,
+          
+          The automated Behave test run is complete. Please find the test report attached.
+        attachments: reports/result_report.txt
