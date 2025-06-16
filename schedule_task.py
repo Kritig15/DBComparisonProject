@@ -3,7 +3,7 @@ import subprocess
 from send_email import send_email_report
 
 import logging
-
+send_email_report("reports/result_report.txt")
 # Logging setup
 logging.basicConfig(
     filename='logs/db_comparison.log',

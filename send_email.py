@@ -1,7 +1,19 @@
+import os
 import smtplib
-from email.mime.text import MIMEText
-from email.header import Header
 import logging
+from dotenv import load_dotenv
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
+from email.header import Header
+
+# Load environment variables
+load_dotenv()
+
+# Fetch credentials from .env
+SENDER_EMAIL = os.getenv("SENDER_EMAIL")
+SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
+RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL")
 
 # Logging setup
 logging.basicConfig(
@@ -10,20 +22,34 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
-def send_email_report(sender_email, sender_password, recipient_email, report_path):
+def send_email_report(report_path, log_path='logs/db_comparison.log'):
     try:
+        # Read report content
         with open(report_path, 'r', encoding='utf-8') as file:
             report_content = file.read()
 
-        msg = MIMEText(report_content, 'plain', 'utf-8')
-        msg['Subject'] = Header('DB Comparison Report', 'utf-8')
-        msg['From'] = sender_email
-        msg['To'] = recipient_email
+        # Create a multipart message
+        msg = MIMEMultipart()
+        msg['Subject'] = Header('📊 DB Comparison Report', 'utf-8')
+        msg['From'] = SENDER_EMAIL
+        msg['To'] = RECIPIENT_EMAIL
 
+        # Add report content as email body
+        body = MIMEText(report_content, 'plain', 'utf-8')
+        msg.attach(body)
+
+        # Attach the log file
+        with open(log_path, 'rb') as f:
+            log_attachment = MIMEApplication(f.read(), _subtype="txt")
+            log_attachment.add_header('Content-Disposition', 'attachment', filename=os.path.basename(log_path))
+            msg.attach(log_attachment)
+
+        # Send the email
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-            smtp.login(sender_email, sender_password)
+            smtp.login(SENDER_EMAIL, SENDER_PASSWORD)
             smtp.send_message(msg)
 
-        logging.info("✅ Email sent successfully.")
+        logging.info("✅ Email sent successfully with log attachment.")
+
     except Exception as e:
         logging.error(f"❌ Failed to send email: {e}")
