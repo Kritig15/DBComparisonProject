@@ -1,19 +1,20 @@
 import os
 import smtplib
 import logging
-from dotenv import load_dotenv
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 from email.header import Header
+from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+# ✅ Load environment variables only if NOT running in GitHub Actions
+if os.environ.get("GITHUB_ACTIONS") != "true":
+    load_dotenv()
 
-# Fetch credentials from .env
-SENDER_EMAIL = os.getenv("SENDER_EMAIL")
-SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
-RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL")
+# ✅ Match with GitHub Secrets and .env keys
+SENDER_EMAIL = os.getenv("EMAIL_USERNAME")
+SENDER_PASSWORD = os.getenv("EMAIL_PASSWORD")
+RECIPIENT_EMAIL = os.getenv("EMAIL_RECIPIENT")
 
 # Logging setup
 logging.basicConfig(

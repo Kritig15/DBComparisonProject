@@ -47,10 +47,13 @@ jobs:
         username: ${{ secrets.EMAIL_USERNAME }}
         password: ${{ secrets.EMAIL_PASSWORD }}
         subject: Behave Test Report
-        to: your.email@example.com
-        from: GitHub Actions <your.email@example.com>
+        to: kritigupta3389@gmail.com
+        from: GitHub Actions <kritigupta003@gmail.com>
         body: |
           Hello Kriti,
           
           The automated Behave test run is complete. Please find the test report attached.
-        attachments: reports/result_report.txt
+        attachments: |
+          reports/result_report.txt
+          logs/db_comparison.log
+
