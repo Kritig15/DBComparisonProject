@@ -16,4 +16,5 @@ def connect_db(db_path):
     Returns:
         sqlite3.Connection object
     """
+    print("Git test")
     return sqlite3.connect(db_path)
