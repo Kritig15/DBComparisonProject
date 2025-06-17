@@ -18,8 +18,7 @@ subprocess.run(["behave"], check=False)
 print("Sending email...")
 send_email_report(
     sender_email="kritigupta003@gmail.com",
-    sender_password="vaok ecok axzz wdtn",  # Use Gmail App Password
+    sender_password="vaok ecok axzz wdtn",  # Use Gmail App Password
     recipient_email="kritigupta3389@gmail.com",
     report_path="reports/result_report.txt"
 )
-
